@@ -9,7 +9,7 @@
 import numpy as np
 import pandas as pd 
 from catboost import CatBoostRegressor 
-from skopt import gp_minimize # Bayesian optimization function (Gaussian Process) - install using
+from skopt import gp_minimize # Bayesian optimisation function (fitting Gaussian process to observations)
 from skopt.space import Real # To define the search space for optimisation
 
 class MusicProfileOptimiser:
@@ -71,7 +71,7 @@ class MusicProfileOptimiser:
         best_genres = {g: float(v) for g, v in zip(self.genres, res.x)}
         return best_genres, float(res.fun), res
 
-    # Produce final recommendations based on differences between original and optimized profiles
+    # Produce final recommendations based on differences between original and optimised profiles
     def recommend(self, original_profile: dict, optimized_genres: dict, top_genres=3): # up to 3 genres each to recommend/avoid
         diffs = {g: optimized_genres[g] - original_profile[g] for g in self.genres} # Calculate differences
         inc = sorted(diffs.items(), key=lambda x: x[1], reverse=True)[:top_genres] # Top recommended genre lstening frequency increases
@@ -87,17 +87,17 @@ class MusicProfileOptimiser:
         best_genres, improved_score, _ = self.optimise_genres(user_profile, n_calls=n_calls)
 
         # Build optimised profile
-        optimised_profile = user_profile.copy()
-        optimised_profile.update(best_genres)
+        optimised_profile = user_profile.copy() # start with original profile
+        optimised_profile.update(best_genres) # update with best genre values
 
         # Recommendations
         try_more, avoid = self.recommend(user_profile, best_genres)
 
+        # Return results (condition to improve, orginal score, improved score, genres to try, genres to avoid) as dictionary
         return {
-            "condition": self.condition,
-            "original_score": original_score,
-            "improved_score": improved_score,
-            "optimised_profile": optimised_profile,
-            "try_genres": try_more,
-            "avoid_genres": avoid
+            "MH Condition to improve": self.condition,
+            "Original Predicted Score": original_score,
+            "Improved Score": improved_score,
+            "Genres to Try": try_more,
+            "Genres to Avoid": avoid
         }
