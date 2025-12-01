@@ -12,6 +12,7 @@ from catboost import CatBoostRegressor
 from skopt import gp_minimize # Bayesian optimisation function (fitting Gaussian process to observations)
 from skopt.space import Real # To define the search space for optimisation
 
+
 class MusicProfileOptimiser:
 
     # Initialise optimiser object with dataframe, model dictionary and condition
